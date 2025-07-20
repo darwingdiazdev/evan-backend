@@ -53,7 +53,6 @@ router.get('/totales', async (req, res) => {
 
     const totales = await Report.aggregate(pipeline);
 
-
     if (totales.length === 0) {
       return res.json({
         milagros: 0,
