@@ -36,7 +36,6 @@ router.get('/totales', async (req, res) => {
     }
 
     const datosCrudos = await Report.find(match);
-    console.log('📄 Documentos encontrados en la base de datos:', datosCrudos.length);
 
     const pipeline = [];
 
@@ -56,10 +55,8 @@ router.get('/totales', async (req, res) => {
 
     const totales = await Report.aggregate(pipeline);
 
-    console.log('📊 Totales agregados:', totales);
 
     if (totales.length === 0) {
-      console.log('⚠️ No se encontraron datos. Retornando ceros.');
       return res.json({
         milagros: 0,
         salvaciones: 0,
@@ -68,7 +65,6 @@ router.get('/totales', async (req, res) => {
       });
     }
 
-    console.log('✅ Respuesta enviada:', totales[0]);
     res.json(totales[0]);
 
   } catch (err) {
