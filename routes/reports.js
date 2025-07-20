@@ -35,8 +35,6 @@ router.get('/totales', async (req, res) => {
       match.region = zona; 
     }
 
-    const datosCrudos = await Report.find(match);
-
     const pipeline = [];
 
     if (Object.keys(match).length > 0) {
