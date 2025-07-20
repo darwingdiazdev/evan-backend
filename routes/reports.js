@@ -24,32 +24,55 @@ router.get('/', async (req, res) => {
 });
 
 router.get('/totales', async (req, res) => {
-  console.log('Query:', req.query);
+
   try {
-    const { zona, desde, hasta } = req.query;
 
-    const filtro = {};
-    if (zona) filtro.region = zona;
+    const { zona } = req.query;
 
-    if (desde && hasta) {
-      // Para incluir todo el día "hasta", se suma 1 día y se usa $lt
-      const desdeDate = new Date(desde);
-      const hastaDate = new Date(hasta);
-      hastaDate.setHours(23, 59, 59, 999);
+    const match = {};
 
-      filtro.fecha = {
-        $gte: desdeDate,
-        $lte: hastaDate
-      };
+    if (zona && zona !== 'Todas') {
+      match.region = zona; 
     }
 
-    const documentos = await Report.find(filtro).sort({ fecha: 1 });
+    const datosCrudos = await Report.find(match);
+    console.log('📄 Documentos encontrados en la base de datos:', datosCrudos.length);
 
-    console.log(`Documentos encontrados: ${documentos.length}`);
+    const pipeline = [];
 
-    res.json(documentos);
+    if (Object.keys(match).length > 0) {
+      pipeline.push({ $match: match });
+    }
+
+    pipeline.push({
+      $group: {
+        _id: null,
+        milagros: { $sum: "$milagros" },
+        salvaciones: { $sum: "$salvaciones" },
+        sanidades: { $sum: "$sanidades" },
+        ofrendas: { $sum: "$ofrendas" },
+      },
+    });
+
+    const totales = await Report.aggregate(pipeline);
+
+    console.log('📊 Totales agregados:', totales);
+
+    if (totales.length === 0) {
+      console.log('⚠️ No se encontraron datos. Retornando ceros.');
+      return res.json({
+        milagros: 0,
+        salvaciones: 0,
+        sanidades: 0,
+        ofrendas: 0,
+      });
+    }
+
+    console.log('✅ Respuesta enviada:', totales[0]);
+    res.json(totales[0]);
+
   } catch (err) {
-    console.error('Error en /totales:', err);
+    console.error('❌ Error en /totales:', err);
     res.status(500).json({
       error: 'Error interno del servidor',
     });
