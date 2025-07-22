@@ -5,9 +5,10 @@ const ReportSchema = new mongoose.Schema({
   region: { type: String, required: true },
   iglesia: { type: String, required: true },
   actividad: { type: String, required: true },
-  milagros: { type: Number, default: 0 },
+  evangelizados: { type: Number, default: 0 },
   sanidades: { type: Number, default: 0 },
-  salvaciones: { type: Number, default: 0 },
+  convertidos: { type: Number, default: 0 },
+  discipulados: { type: Number, default: 0 },
   ofrendas: { type: Number, default: 0 },
   comentario: { type: String, default: '' },
 });

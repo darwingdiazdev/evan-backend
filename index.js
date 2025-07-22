@@ -3,6 +3,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const reportRoutes = require('./routes/reports');
+const userRoutes = require('./routes/user');
 
 const app = express();
 app.use(cors());
@@ -13,6 +14,7 @@ mongoose.connect(process.env.MONGO_URI)
   .catch((err) => console.error('Error al conectar:', err));
 
 app.use('/api/reports', reportRoutes);
+app.use('/api/users', userRoutes);
 
 app.listen(process.env.PORT, () => {
   console.log(`Servidor corriendo en puerto ${process.env.PORT}`);

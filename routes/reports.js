@@ -44,9 +44,10 @@ router.get('/totales', async (req, res) => {
     pipeline.push({
       $group: {
         _id: null,
-        milagros: { $sum: "$milagros" },
-        salvaciones: { $sum: "$salvaciones" },
+        evangelizados: { $sum: "$evangelizados" },
         sanidades: { $sum: "$sanidades" },
+        convertidos: { $sum: "$convertidos" },
+        discipulados: { $sum: "$discipulados" },
         ofrendas: { $sum: "$ofrendas" },
       },
     });
@@ -55,9 +56,10 @@ router.get('/totales', async (req, res) => {
 
     if (totales.length === 0) {
       return res.json({
-        milagros: 0,
-        salvaciones: 0,
+        evangelizados: 0,
         sanidades: 0,
+        convertidos: 0,
+        discipulados: 0,
         ofrendas: 0,
       });
     }
@@ -65,7 +67,7 @@ router.get('/totales', async (req, res) => {
     res.json(totales[0]);
 
   } catch (err) {
-    console.error('❌ Error en /totales:', err);
+    console.error('Error en totales:', err);
     res.status(500).json({
       error: 'Error interno del servidor',
     });
