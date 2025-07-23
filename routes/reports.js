@@ -24,15 +24,22 @@ router.get('/', async (req, res) => {
 });
 
 router.get('/totales', async (req, res) => {
-
   try {
+    const { zona, desde, hasta } = req.query;
 
-    const { zona } = req.query;
+    console.log(zona, desde, hasta);
 
     const match = {};
 
     if (zona && zona !== 'Todas') {
-      match.region = zona; 
+      match.region = zona;
+    }
+
+    // Filtrar por rango de fechas si están presentes
+    if (desde || hasta) {
+      match.createdAt = {};
+      if (desde) match.createdAt.$gte = new Date(desde);
+      if (hasta) match.createdAt.$lte = new Date(hasta);
     }
 
     const pipeline = [];
