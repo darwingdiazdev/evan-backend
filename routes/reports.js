@@ -23,6 +23,7 @@ router.get('/', async (req, res) => {
   }
 });
 
+
 router.get('/totales', async (req, res) => {
   try {
     const { zona, desde, hasta } = req.query;
@@ -37,10 +38,22 @@ router.get('/totales', async (req, res) => {
 
     // Filtrar por rango de fechas si están presentes
     if (desde || hasta) {
-      match.createdAt = {};
-      if (desde) match.createdAt.$gte = new Date(desde);
-      if (hasta) match.createdAt.$lte = new Date(hasta);
+      match.fecha = {};
+      
+      if (desde) {
+        const desdeDate = new Date(desde);
+        desdeDate.setUTCHours(4, 0, 0, 0); // Venezuela es UTC-4
+        match.fecha.$gte = desdeDate;
+      }
+
+      if (hasta) {
+        const hastaDate = new Date(hasta);
+        hastaDate.setUTCHours(3, 59, 59, 999); // fin del día en UTC-4
+        hastaDate.setDate(hastaDate.getDate() + 1); // avanzar 1 día
+        match.fecha.$lte = hastaDate;
+      }
     }
+
 
     const pipeline = [];
 
@@ -60,6 +73,7 @@ router.get('/totales', async (req, res) => {
     });
 
     const totales = await Report.aggregate(pipeline);
+
 
     if (totales.length === 0) {
       return res.json({
