@@ -26,7 +26,7 @@ router.get('/totales', async (req, res) => {
   try {
     const { zona, desde, hasta } = req.query;
 
-
+    console.log(zona, desde, hasta);
     const match = {};
 
     if (zona && zona !== 'Todas') {
