@@ -3,6 +3,10 @@ const router = express.Router();
 const User = require('../models/User');
 const bcrypt = require('bcryptjs');  // para hashear contraseñas
 
+router.get('/health', async (req, res) => {
+  res.status(200).json({ ok: 'ok' })
+})
+
 // Registrar nuevo usuario
 router.post('/register', async (req, res) => {
     
