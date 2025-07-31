@@ -13,6 +13,10 @@ mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('Conectado a MongoDB Atlas'))
   .catch((err) => console.error('Error al conectar:', err));
 
+app.get('/health', async (req, res) => {
+  res.status(200).json({ ok: 'ok' })
+})
+
 app.use('/api/reports', reportRoutes);
 app.use('/api/users', userRoutes);
 
